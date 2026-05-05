@@ -3,10 +3,11 @@ import { isAdmin } from "./userController.js";
 
 export async function createProduct(req, res) {
 
-    if(isAdmin(req)){
+    if(!isAdmin(req)){
         res.status(403).json({ message : "Access denied. Admins only"});
         return;
     }
+    console.log(req.body.images)
 
     try{
 
@@ -30,7 +31,7 @@ export async function createProduct(req, res) {
 
         data.name = req.body.name;
         data.description = req.body.description || ""
-        data.altNames = req.body.altNames || []
+        data.altNames = req.body.altNames || [];
 
         if(req.body.price == null){
             res.status(400).json({message : "Product price is required"});
@@ -76,7 +77,7 @@ export async function getProducts(req, res) {
 }
 
 export async function deleteProduct(req, res){
-    if(isAdmin(req)){
+    if(!isAdmin(req)){
         res.status(403).json({message: "Access denied. Admins only"});
         return;
     }
@@ -94,7 +95,7 @@ export async function deleteProduct(req, res){
 }
 
 export async function updateProduct(req, res) {
-    if(isAdmin(req)){
+    if(!isAdmin(req)){
         res.status(403).json({ message : "Access denied. Admins only"});
         return;
     }
