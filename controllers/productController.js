@@ -163,29 +163,31 @@ export async function getProductById(req, res){
 
 }
 
-export async function searchProducts(req, res){
+export async function searchProducts(req , res){
 
-    const query = req.params?.query || "";
+	const query = req.params?.query||"";
 
-    try{
+	try{
 
-        const products = await Product.find(
+		const products = await Product.find(
+			{ 
+				$or : [
+					{ name : { $regex : query , $options : "i" } },
+					{description : { $regex : query , $options : "i" } },
+					{ altNames: { $elemMatch: { $regex: query, $options: "i" } } }
+				],
+				isVisible : true				
+			}
+		)
 
-            {
-                $or : [
-                    { name : {$regex : query , $option : "i"} },
-                    { description : {$regex : query , $option : "i"} },
-                    { altNames : { $eleMatch: {$regex: query, $option: "i"} } }
-                ],
-                isVisible : true
-            }
-        )
+		res.status(200).json(products);
 
-        res.status(200).json(products);
 
-    }catch(error){
-        res.status(500).json({message : "Error searching products", error: error});
-    }
+
+	}catch(error){
+		res.status(500).json({message : "Error searching products" , error : error});
+	}
+
 }
 
 
